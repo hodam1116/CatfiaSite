@@ -28,7 +28,7 @@ window.CATFIA_DATA = {
       "title": "하쿠가(白牙)",
       "group": "kibayashi",
       "breed": "재패니즈 밥테일",
-      "role": "키바야시구미 지부장+하쿠가구미(키바야시구미 산하 조직) 조장",
+      "role": "키바야시구미 지부장, 하쿠가구미(키바야시구미 산하 조직) 조장",
       "appearance": "흰 털·검은 반점, 노년, 짧은 꼬리, 흰 송곳니",
       "npc": false,
       "bio": "노련하고 능청스러운 키바야시구미의 지부장."
@@ -61,7 +61,7 @@ window.CATFIA_DATA = {
       "title": "데이(地)",
       "group": "anmiaotang",
       "breed": "드래곤 리",
-      "role": "안묘당(安猫堂) 홍곤(426)",
+      "role": "안묘당 홍곤(426)",
       "appearance": "짙은 갈색 태비, 육중함, 굵은 목, 무표정",
       "npc": false,
       "bio": "육중한 체격과 과묵한 인상의 안묘당 간부."
@@ -131,51 +131,6 @@ window.CATFIA_DATA = {
       "appearance": "블루그레이 털, 통통함, 둥근 얼굴, 큰 눈",
       "npc": false,
       "bio": "박식하고 능청스러운 독립 협력자."
-    },
-    {
-      "id": "family-member",
-      "name": "패밀리 조직원",
-      "title": "패밀리 조직원",
-      "group": "family",
-      "role": "패밀리의 실무를 맡는 조직원",
-      "bio": "귀여움 팔기를 주력으로 하는 신생 패밀리의 일원.",
-      "npc": true
-    },
-    {
-      "id": "kibayashi-member",
-      "name": "키바야시구미 조직원",
-      "title": "키바야시구미 조직원",
-      "group": "kibayashi",
-      "role": "키바야시구미의 조직원",
-      "bio": "액상간식 밀수를 주력으로 하는 거대 조직의 일원. 조직의 관할과 위계 안에서 움직인다.",
-      "npc": true
-    },
-    {
-      "id": "anmiaotang-member",
-      "name": "안묘당 조직원",
-      "title": "안묘당 조직원",
-      "group": "anmiaotang",
-      "role": "안묘당의 조직원",
-      "bio": "캣닙 유통을 주력으로 하는 거대 조직의 일원. 수익과 경찰견의 단속 사이에서 일한다.",
-      "npc": true
-    },
-    {
-      "id": "f-block-member",
-      "name": "F-블록 조직원",
-      "title": "F-블록 조직원",
-      "group": "fblock",
-      "role": "거리의 갱스터",
-      "bio": "절도와 강도, 보호비로 살아가는 F-블록의 일원.",
-      "npc": true
-    },
-    {
-      "id": "police",
-      "name": "경찰",
-      "title": "경찰",
-      "group": "police",
-      "role": "현장 단속을 맡는 경찰견",
-      "bio": "인간들이 만든 동물법을 집행하는 경찰견. 도시의 현장 단속을 맡는다.",
-      "npc": true
     },
     {
       "id": "raccoon-worker",
