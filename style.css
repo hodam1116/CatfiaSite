@@ -17,3 +17,26 @@ dialog{padding:0;border:1px solid #6e705b;background:#1d241c;color:var(--paper);
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation:none!important;transition:none!important}}
 @media(max-width:360px){.faction-tabs,.district-selector{margin-right:-20px;padding-right:20px}}
 #expression-panel>img{height:auto}
+
+/* One section per screen; overflow remains usable by touch and keyboard. */
+html:has(.tabbed-site){height:100%;overflow:hidden;scroll-behavior:auto}
+.tabbed-site{height:100dvh;overflow:hidden;display:flex;flex-direction:column}
+.tabbed-site .site-header{flex:0 0 80px;height:80px}
+.tabbed-site main{flex:1;min-height:0;overflow:hidden}
+.tabbed-site main>section{height:100%;max-height:none;overflow:auto;overscroll-behavior:contain;scrollbar-width:none;outline:none}
+.tabbed-site main>section::-webkit-scrollbar,dialog::-webkit-scrollbar{display:none}
+dialog{scrollbar-width:none}
+.tabbed-site .section-shell{padding-top:42px;padding-bottom:40px}
+.tabbed-site .section-heading{margin-bottom:28px}
+.tabbed-site .section-heading>.eyebrow{margin-bottom:12px}
+.tabbed-site .section-heading h2{font-size:38px}
+.tabbed-site .hero{min-height:0}
+.tabbed-site .hero-copy{padding-top:clamp(35px,7vh,85px)}
+.tabbed-site .hero-cast{height:95%}
+.tabbed-site .world-image{min-height:440px}
+.tabbed-site .business-list article{grid-template-columns:35px 170px 1fr}
+.tabbed-site .world-layout{gap:40px}
+@media(min-width:851px){.tabbed-site .world-layout{grid-template-columns:.85fr 1.15fr}.tabbed-site .world-notes article{padding:17px 0}.tabbed-site .world-notes p{font-size:12px}.tabbed-site .world-image{height:470px}.tabbed-site .section-heading>div>p{font-size:12px}}
+@media(max-width:850px){.tabbed-site .site-header{flex-basis:72px;height:72px}.tabbed-site .hero-copy{padding-top:45px}.tabbed-site .hero-cast{height:85%}.tabbed-site .world-image{min-height:0}}
+@media(max-width:600px){.tabbed-site .site-header{flex-basis:64px;height:64px}.tabbed-site .mobile-nav{top:64px}.tabbed-site .section-shell{padding-top:28px;padding-bottom:32px}.tabbed-site .section-heading h2{font-size:29px}.tabbed-site .hero-copy{padding:26px 22px 0}.tabbed-site h1{font-size:clamp(32px,10vw,43px);margin:16px 0}.tabbed-site .hero-description{font-size:11px;line-height:1.85}.tabbed-site .hero-actions{margin-top:19px;gap:16px}.tabbed-site .hero-cast{height:min(43dvh,350px);bottom:24px}.tabbed-site .hero-city{inset:30% 0 0}.tabbed-site .hero-bottom{height:35px;padding:0 20px}.tabbed-site .hero-watermark{top:50%}.tabbed-site .hero-cast .hero-calogero{right:-45px}.tabbed-site .hero-cast .hero-alfio{right:85px}.tabbed-site .business-list article{grid-template-columns:22px 1fr}.tabbed-site .hero-copy .eyebrow{font-size:7px}}
+@media(max-height:650px) and (max-width:600px){.tabbed-site .hero{min-height:560px}.tabbed-site main:has(.hero:not([hidden])){overflow:auto;scrollbar-width:none}.tabbed-site .hero-cast{height:240px}}

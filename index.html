@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#151915">
-  <meta name="description" content="식량이 화폐가 되고, 귀여움이 사업이 되는 도시. 캣피아의 무대 바스턴과 그곳의 조직, 인물, 생존의 규칙을 만나보세요.">
+  <meta name="description" content="식량이 화폐가 되고, 귀여움이 사업이 되는 도시. 캣피아의 무대 바스턴과 그곳의 조직과 인물을 만나보세요.">
   <meta property="og:title" content="캣피아 — 바스턴의 뒷골목">
   <meta property="og:description" content="인간이 모르는 도시의 질서. 고양이들의 패밀리, 경찰견, 그리고 당신의 선택.">
   <meta property="og:type" content="website">
@@ -15,26 +15,26 @@
   <script defer src="./data.js"></script>
   <script defer src="./app.js"></script>
 </head>
-<body>
+<body class="tabbed-site">
   <a class="skip-link" href="#main">본문으로 바로가기</a>
   <header class="site-header">
     <a class="brand" href="#home" aria-label="캣피아 처음으로"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M7 22 8 6l10 8h4L32 6l1 16c0 9-6 14-13 14S7 31 7 22Z"/><path d="m11 23 5 2m13-2-5 2M18 29h4"/></svg><span>CATFIA<small>바스턴 기록보관소</small></span></a>
-    <nav aria-label="주 메뉴"><a href="#world">세계관</a><a href="#factions">조직과 인물</a><a href="#districts">도시의 구역</a><a href="#business">사업과 계절</a><a href="#rules">도시의 규칙</a></nav>
-    <a href="#factions" class="header-link">인물 도감 <span aria-hidden="true">↗</span></a>
+    <nav aria-label="주 메뉴"><a href="#home">처음</a><a href="#world">세계관</a><a href="#factions">조직과 인물</a><a href="#districts">도시의 구역</a><a href="#business">도시의 사업</a></nav>
+    <a href="https://share.crack.wrtn.ai/v4q80ti" class="header-link" target="_blank" rel="noopener noreferrer">첫 만남을 고르기 <span aria-hidden="true">↗</span></a>
     <button class="menu-toggle" aria-label="메뉴 열기" aria-expanded="false" aria-controls="mobile-nav"><span></span><span></span></button>
   </header>
-  <nav id="mobile-nav" class="mobile-nav" aria-label="모바일 메뉴" hidden><a href="#world">세계관</a><a href="#factions">조직과 인물</a><a href="#districts">도시의 구역</a><a href="#business">사업과 계절</a><a href="#rules">도시의 규칙</a></nav>
+  <nav id="mobile-nav" class="mobile-nav" aria-label="모바일 메뉴" hidden><a href="#home">처음</a><a href="#world">세계관</a><a href="#factions">조직과 인물</a><a href="#districts">도시의 구역</a><a href="#business">도시의 사업</a></nav>
   <main id="main">
     <section class="hero" id="home" aria-labelledby="hero-title">
       <div class="hero-city" aria-hidden="true"></div>
       <div class="hero-watermark" aria-hidden="true">CATFIA</div>
-      <div class="hero-copy"><p class="eyebrow"><span class="status-dot"></span> WELCOME TO BASTON</p><h1 id="hero-title">귀여움은 사업.<br>의리는 <em>선택.</em></h1><p class="hero-description">인간이 잠든 사이, 도시의 주인이 바뀐다.<br>식량이 화폐가 되고 발톱이 법이 되는 곳.<br>바스턴의 뒷골목에 온 것을 환영한다.</p><div class="hero-actions"><a class="button primary" href="#factions">조직과 인물 살펴보기 <span>↗</span></a><a class="text-link" href="#world">도시의 이야기 <span>↓</span></a></div><p class="hero-footnote">A CITY OF PAWS, POWER &amp; PROMISES.</p></div>
+      <div class="hero-copy"><p class="eyebrow"><span class="status-dot"></span> WELCOME TO BASTON</p><h1 id="hero-title">귀여움은 사업.<br>의리는 <em>선택.</em></h1><p class="hero-description">인간이 잠든 사이, 도시의 주인이 바뀐다.<br>식량이 화폐가 되고 발톱이 법이 되는 곳.<br>바스턴의 뒷골목에 온 것을 환영한다.</p><div class="hero-actions"><a class="button primary" href="https://share.crack.wrtn.ai/v4q80ti" target="_blank" rel="noopener noreferrer">첫 만남을 고르기 <span>↗</span></a><a class="text-link" href="#factions">조직과 인물 <span>↗</span></a></div><p class="hero-footnote">A CITY OF PAWS, POWER &amp; PROMISES.</p></div>
       <div class="hero-cast" aria-hidden="true"><div class="cast-halo"></div><img class="hero-alfio" src="./assets/portraits/alfio.webp" alt="" width="900" height="900"><img class="hero-calogero" src="./assets/portraits/calogero.webp" alt="" width="900" height="900"><div class="cast-label"><span>THE FAMILY</span><b>계산하는 참모, 행동하는 발톱.</b></div></div>
-      <div class="hero-bottom"><span>바스턴 · 인간과 동물이 공존하는 도시</span><a href="#world" aria-label="세계관으로 스크롤">SCROLL TO EXPLORE <span>↓</span></a></div>
+      <div class="hero-bottom"><span>바스턴 · 인간과 동물이 공존하는 도시</span><a href="#world" aria-label="세계관 열기">EXPLORE BASTON <span>↗</span></a></div>
     </section>
-    <div class="ticker" aria-hidden="true"><span>사료는 화폐다</span><i>✦</i><span>구역은 권력이다</span><i>✦</i><span>호의에는 대가가 있다</span><i>✦</i><span>충성은 영원하지 않다</span><i>✦</i></div>
 
-    <section class="world section-shell" id="world" aria-labelledby="world-title">
+
+    <section class="world section-shell" id="world" hidden aria-labelledby="world-title">
       <div class="section-heading"><p class="eyebrow">01 / THE WORLD</p><div><h2 id="world-title">같은 도시.<br><em>다른 질서.</em></h2><p>인간의 눈에는 그저 고양이와 개.<br>그 발밑에서는 또 하나의 사회가 움직인다.</p></div></div>
       <div class="world-layout"><div class="world-image"><img src="./assets/backgrounds/harbor.webp" alt="컨테이너와 크레인이 늘어선 바스턴의 항구" width="1024" height="1024" loading="lazy"><div class="image-caption"><span>BASTON / THE HARBOR</span><p>컨테이너 하나가 움직이면,<br>도시의 먹거리도 움직인다.</p></div></div><div class="world-notes">
         <article><span class="note-number">I.</span><div><h3>인간은 이 질서를 모른다</h3><p>동물은 인간의 말을 알아듣지만, 인간은 동물의 언어와 조직체계를 이해하지 못한다. 그들의 급식과 입양, 건물 관리와 물건 이동은 뜻하지 않게 동물 사회를 바꾼다.</p></div></article>
@@ -44,15 +44,15 @@
       </div></div>
     </section>
 
-    <section class="faction-section" id="factions" aria-labelledby="factions-title"><div class="section-shell">
+    <section class="faction-section" id="factions" hidden aria-labelledby="factions-title"><div class="section-shell">
       <div class="section-heading compact"><p class="eyebrow">02 / FACTIONS &amp; FACES</p><div><h2 id="factions-title">누구의 편에<br><em>설 것인가.</em></h2><p>같은 조직이라고 같은 생각을 하지는 않는다.<br>인물을 선택해 그들의 성격과 표정을 살펴보자.</p></div></div>
       <div class="faction-tabs" id="faction-tabs" role="tablist" aria-label="조직 선택"></div>
       <div id="faction-panel" role="tabpanel" tabindex="0"></div>
       <noscript><p>조직과 인물 도감은 JavaScript를 켜면 확인할 수 있습니다.</p></noscript>
-      <div class="directory-footer"><span>12명의 주요 인물 · 11종의 도시 주민과 조직원</span><span>인물 카드를 누르면 상세 기록이 열립니다 <b>↗</b></span></div>
+      <div class="directory-footer"><span>12명의 주요 인물 · 10종의 도시 주민과 조직원</span><span>인물 카드를 누르면 상세 기록이 열립니다 <b>↗</b></span></div>
     </div></section>
 
-    <section class="district-section section-shell" id="districts" aria-labelledby="districts-title">
+    <section class="district-section section-shell" id="districts" hidden aria-labelledby="districts-title">
       <div class="section-heading compact"><p class="eyebrow">03 / CITY BLOCKS</p><div><h2 id="districts-title">한 블록 너머,<br><em>다른 기회.</em></h2><p>도시는 블록 단위로 조직의 구역이 나뉜다.<br>무엇을 얻고 싶은지에 따라 향할 곳도 달라진다.</p></div></div>
       <div class="district-layout"><div class="district-selector" role="tablist" aria-label="구역 선택" aria-orientation="vertical">
         <button role="tab" id="district-residential" aria-controls="district-detail" aria-selected="true" data-district="residential"><span>01</span><b>주택가</b><small>귀여움이 수입이 되는 곳</small><i>↗</i></button>
@@ -63,30 +63,21 @@
       </div><div id="district-detail" class="district-detail" role="tabpanel" aria-labelledby="district-residential" tabindex="0"></div></div>
     </section>
 
-    <section class="economy-section" id="business" aria-labelledby="economy-title"><div class="section-shell">
-      <div class="section-heading compact"><p class="eyebrow">04 / THE BUSINESS OF SURVIVAL</p><div><h2 id="economy-title">배를 채우는 일도,<br><em>권력을 쥐는 일도.</em></h2><p>사료 한 줌을 어디서 얻을 것인가.<br>사업의 수익만큼 위험과 반발도 돌아온다.</p></div></div>
+    <section class="economy-section" id="business" hidden aria-labelledby="economy-title"><div class="section-shell">
+      <div class="section-heading compact"><p class="eyebrow">04 / THE BUSINESS OF SURVIVAL</p><div><h2 id="economy-title">배를 채우는 일도,<br><em>권력을 쥐는 일도.</em></h2><p>사료 한 줌을 어디서 얻을 것인가.<br>거리와 항구에는 저마다의 거래가 있다.</p></div></div>
       <div class="business-list">
-        <article><span>01</span><h3>귀여움 팔기</h3><p>인간에게 애교를 부려 사료를 얻는다. 수익은 낮지만 폭력과 협박이 없다면 불법이 아니다.</p><b class="business-tag">낮은 수익 · 합법</b></article>
-        <article><span>02</span><h3>캣닙 유통</h3><p>금지된 쾌락을 원하는 수요는 크다. 높은 수익에는 경찰견의 강한 단속이 따른다.</p><b class="business-tag danger">고수익 · 단속 위험</b></article>
-        <article><span>03</span><h3>액상간식 밀수</h3><p>바다 고양이가 들여온 타 지역의 액상간식을 유통한다. 탁월한 맛은 곧 수요가 된다.</p><b class="business-tag">항구 · 밀무역</b></article>
-        <article><span>04</span><h3>도박</h3><p>쥐싸움 베팅과 주사위 홀짝. 사냥감이 풍부한 봄부터 가을까지 손님이 많다.</p><b class="business-tag">계절을 타는 수요</b></article>
-        <article><span>05</span><h3>사료 빌려주기</h3><p>식량이 귀해지는 겨울에 사료를 빌려주고, 날이 풀리면 높은 이자를 받는다.</p><b class="business-tag">겨울의 빚</b></article>
-        <article><span>06</span><h3>보호비</h3><p>사냥감의 일부를 받는 대신 강도로부터 보호한다. 겨울에는 길고양이의 저항이 거세진다.</p><b class="business-tag danger">보호와 갈취의 경계</b></article>
-        <article><span>07</span><h3>절도와 강도</h3><p>인간의 상가나 사냥을 마친 길고양이를 노린다. 굶주린 겨울에는 저항도 커진다.</p><b class="business-tag danger">약탈 · 반발</b></article>
+        <article><span>01</span><h3>귀여움 팔기</h3><p>인간에게 애교를 부려 사료와 간식을 얻는다.</p></article>
+        <article><span>02</span><h3>캣닙 유통</h3><p>금지된 식물 캣닙을 몰래 유통한다. 경찰견의 주요 단속 대상이다.</p></article>
+        <article><span>03</span><h3>액상간식 밀수</h3><p>바다 고양이가 들여온 타 지역의 액상간식을 유통한다. 탁월한 맛은 곧 수요가 된다.</p></article>
+        <article><span>04</span><h3>도박</h3><p>쥐싸움에 식량을 걸거나, 주사위 홀짝으로 승부를 겨룬다.</p></article>
+        <article><span>05</span><h3>사료 빌려주기</h3><p>사료를 빌려주고 이자를 받는다. 식량이 돈인 도시의 대부업이다.</p></article>
+        <article><span>06</span><h3>보호비</h3><p>사냥감의 일부를 받는 대신 강도로부터 보호한다. 보호와 갈취의 경계는 모호하다.</p></article>
+        <article><span>07</span><h3>절도와 강도</h3><p>인간의 상가나 사냥을 마친 길고양이에게서 먹거리와 물건을 빼앗는다.</p></article>
       </div>
-      <div class="season-block"><div class="season-intro"><p class="eyebrow">THE CITY NEVER STANDS STILL</p><h3>계절이 바뀌면,<br>장부도 달라진다.</h3><p>사냥감의 수와 사업 수요,<br>고양이들의 행동은 계절을 따른다.</p></div><div class="season-interactive"><div class="season-tabs" role="tablist" aria-label="계절 선택"><button id="season-spring" role="tab" aria-controls="season-detail" aria-selected="true" data-season="spring">봄</button><button id="season-summer" role="tab" aria-controls="season-detail" aria-selected="false" tabindex="-1" data-season="summer">여름</button><button id="season-autumn" role="tab" aria-controls="season-detail" aria-selected="false" tabindex="-1" data-season="autumn">가을</button><button id="season-winter" role="tab" aria-controls="season-detail" aria-selected="false" tabindex="-1" data-season="winter">겨울</button></div><div id="season-detail" role="tabpanel" aria-labelledby="season-spring" tabindex="0"></div></div></div>
     </div></section>
 
-    <section class="rules-section section-shell" id="rules" aria-labelledby="rules-title"><div class="section-heading"><p class="eyebrow">05 / THE UNWRITTEN RULES</p><div><h2 id="rules-title">이 도시는<br><em>당신 없이도 움직인다.</em></h2><p>선택은 세계를 바꾸지만,<br>세계의 모든 사건이 당신을 중심으로 일어나지는 않는다.</p></div></div>
-      <div class="rules-layout"><div class="rule-statement"><span class="big-mark" aria-hidden="true">✦</span><p>충성은 명령으로<br>만들어지지 않는다.</p><span>BASTON CODE / 001</span></div><div class="rules-accordions">
-        <details open><summary><span>01</span>조직과 주민은 스스로 판단한다 <b aria-hidden="true">+</b></summary><p>모든 조직은 자체적인 사업과 외교, 확장과 내부 갈등을 이어간다. 간부들은 다른 의견을 내고, 이름 없는 주민도 위험 앞에서 달아나거나 명령을 거부할 수 있다.</p></details>
-        <details><summary><span>02</span>시간과 자원에는 한계가 있다 <b aria-hidden="true">+</b></summary><p>사건과 행동에는 시간이 필요하다. 동시에 모든 장소에서 활동할 수는 없다. 조직이 커지면 할 수 있는 일도 많아지지만 유지 비용도 증가한다.</p></details>
-        <details><summary><span>03</span>결과는 다음 장면에도 남는다 <b aria-hidden="true">+</b></summary><p>주요 인물도 부상, 체포, 배신, 사망, 이탈을 겪을 수 있다. 그 결과는 이후에도 유지된다. 선택은 관계와 규모, 충성심과 사건의 결말을 바꾼다.</p></details>
-        <details><summary><span>04</span>당신의 역할은 당신이 정한다 <b aria-hidden="true">+</b></summary><p>이름, 품종, 성격, 과거, 행동과 대사는 사용자의 몫이다. AI가 임의로 결정하지 않는다. 어느 조직의 간부도 사용자의 명령에 무조건 복종하지는 않는다.</p></details>
-      </div></div>
-    </section>
-    <section class="closing"><p class="eyebrow">EVERY PAW LEAVES A MARK.</p><h2>당신은 이 도시에<br>어떤 발자국을 남길 것인가.</h2><a class="button primary" href="#factions">첫 만남을 고르기 <span>↗</span></a><p class="closing-note">캣피아 세계관 · 인물 아카이브</p></section>
+
   </main>
-  <footer><a class="footer-brand" href="#home">CATFIA<span>캣피아</span></a><p>바스턴의 뒷골목에서.</p><a href="#home">맨 위로 <span>↑</span></a></footer>
-  <dialog id="character-dialog" aria-labelledby="character-title"><button class="dialog-close" aria-label="인물 상세 닫기">×</button><div class="character-modal"><div class="modal-visual"><div id="expression-panel" role="tabpanel" tabindex="0"><img id="character-image" src="./assets/characters/calogero-default.webp" alt="" width="960" height="960"></div><div id="expression-tabs" role="tablist" aria-label="표정 선택"></div></div><div class="modal-copy"><p class="eyebrow" id="character-group"></p><h2 id="character-title"></h2><p id="character-role"></p><dl id="character-facts"></dl><div class="modal-note"><span>BASTON PERSONNEL FILE</span><p>관계는 고정되어 있지 않습니다.<br>선택과 사건에 따라 달라집니다.</p></div></div></div></dialog>
+
+  <dialog id="character-dialog" aria-labelledby="character-title"><button class="dialog-close" aria-label="인물 상세 닫기">×</button><div class="character-modal"><div class="modal-visual"><div id="expression-panel" role="tabpanel" tabindex="0"><img id="character-image" src="./assets/characters/calogero-default.webp" alt="" width="960" height="960"></div><div id="expression-tabs" role="tablist" aria-label="표정 선택"></div></div><div class="modal-copy"><p class="eyebrow" id="character-group"></p><h2 id="character-title"></h2><p id="character-role"></p><dl id="character-facts"></dl></div></div></dialog>
 </body></html>
