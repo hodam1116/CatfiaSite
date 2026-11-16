@@ -135,8 +135,7 @@
     const panel = $('#expression-panel');
     const status = $('#image-status');
     panel.setAttribute('aria-busy', 'true');
-    status.textContent = '이미지를 준비하고 있습니다.';
-    status.hidden = false;
+    status.hidden = true;
     $('#image-retry').hidden = true;
     const src = image(person, key);
     let ok = await preloadImage(src);
@@ -149,6 +148,7 @@
     panel.setAttribute('aria-busy', 'false');
     if (!ok) {
       status.textContent = '이미지를 불러오지 못했습니다. 다시 시도해 주세요.';
+      status.hidden = false;
       $('#image-retry').hidden = false;
       return;
     }
