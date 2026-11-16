@@ -60,7 +60,7 @@
         completed++;
         if (!ok) failed++;
         progress.value = completed;
-        $('#loader-count').textContent = `${Math.floor(completed / urls.length * 100)}% · ${completed} / ${urls.length}`;
+        $('#loader-count').textContent = `${Math.floor(completed / urls.length * 100)}%`;
       }
     }
     await Promise.all(Array.from({ length: 6 }, worker));
