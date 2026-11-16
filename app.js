@@ -6,6 +6,76 @@
   const escape = value => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
   const image = (person, expression = 'default') => `./assets/characters/${person.id}-${expression}.webp`;
 
+  // Preload only assets referenced by the current public roster.
+  const imageRequests = new Map();
+  function preloadImage(src) {
+    if (imageRequests.has(src)) return imageRequests.get(src);
+    const request = new Promise(resolve => {
+      const img = new Image();
+      img.decoding = 'async';
+      let settled = false;
+      const finish = ok => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        img.onload = img.onerror = null;
+        if (!ok) imageRequests.delete(src);
+        resolve(ok);
+      };
+      const timer = setTimeout(() => finish(false), 30000);
+      img.onload = () => finish(true);
+      img.onerror = () => finish(false);
+      img.src = src;
+    });
+    imageRequests.set(src, request);
+    return request;
+  }
+  const loader = $('#site-loader');
+  const siteRegions = $$('.site-header, #mobile-nav, main, .skip-link');
+  let loaderDismissed = false;
+  function dismissLoader() {
+    if (loaderDismissed) return;
+    loaderDismissed = true;
+    loader.hidden = true;
+    siteRegions.forEach(region => region.inert = false);
+    document.body.dataset.imagesReady = 'interactive';
+    if (loader.contains(document.activeElement)) $('.brand').focus({ preventScroll: true });
+  }
+  async function preloadSite() {
+    loader.hidden = false;
+    siteRegions.forEach(region => region.inert = true);
+    $('#loader-skip').focus({ preventScroll: true });
+    $('#loader-skip').addEventListener('click', dismissLoader);
+    const backgrounds = new Set([...factions.map(f => f.background), ...Object.values(districts).map(d => d.background), 'harbor', 'fblock']);
+    const urls = [...new Set([
+      './assets/portraits/calogero.webp', './assets/portraits/alfio.webp',
+      ...[...backgrounds].filter(Boolean).map(name => `./assets/backgrounds/${name}.webp`),
+      ...people.map(person => `./assets/thumbs/${person.id}.webp`),
+      ...people.flatMap(person => (person.npc ? ['default'] : expressions.map(e => e[0])).map(key => image(person, key)))
+    ])];
+    let next = 0, completed = 0, failed = 0;
+    const progress = $('#loader-progress');
+    progress.max = urls.length;
+    document.body.dataset.imageTotal = urls.length;
+    const slowNotice = setTimeout(() => {
+      $('#loader-message').textContent = '연결이 느리면 먼저 들어가셔도 됩니다. 이미지는 계속 준비됩니다.';
+    }, 8000);
+    async function worker() {
+      while (next < urls.length) {
+        const ok = await preloadImage(urls[next++]);
+        completed++;
+        if (!ok) failed++;
+        progress.value = completed;
+        $('#loader-count').textContent = `${Math.floor(completed / urls.length * 100)}% · ${completed} / ${urls.length}`;
+      }
+    }
+    await Promise.all(Array.from({ length: 6 }, worker));
+    clearTimeout(slowNotice);
+    document.body.dataset.imageFailures = failed;
+    document.body.dataset.preloadComplete = 'true';
+    dismissLoader();
+  }
+
   function keyboardTabs(container) {
     container.addEventListener('keydown', event => {
       if (!['ArrowRight', 'ArrowLeft', 'ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) return;
@@ -40,7 +110,7 @@
     selectTab(factionTabs, $(`[data-faction="${id}"]`));
     panel.setAttribute('aria-labelledby', `faction-${id}`);
     panel.style.setProperty('--accent', faction.color);
-    panel.innerHTML = `<div class="faction-overview"><article class="faction-brief"><img src="./assets/backgrounds/${faction.background}.webp" alt="" width="1024" height="1024"><span class="faction-index" aria-hidden="true">${String(factions.indexOf(faction) + 1).padStart(2, '0')}</span><div class="eyebrow">${escape(faction.english)}</div><h3>${escape(faction.description)}</h3><p>${escape(faction.body)}</p><div class="faction-meta"><span>${escape(faction.tag)}</span><span>${escape(faction.business)}</span></div><small>${escape(faction.note)}</small></article><div class="person-grid">${members.map(person => `<button class="person-card" data-person="${person.id}" aria-label="${escape(person.name)} 상세 기록 보기"><div class="person-picture"><img src="./assets/thumbs/${person.id}.webp" alt="${escape(person.name)}" width="480" height="480" loading="lazy"><span class="person-kind">${person.npc ? 'CITIZEN FILE' : 'PERSONNEL FILE'}</span></div><h4>${escape(person.name)}</h4><p class="person-role">${escape(person.role)}</p><p class="person-traits">${escape(person.npc ? '도시의 주민과 조직원' : person.bio)}</p></button>`).join('')}</div></div>`;
+    panel.innerHTML = `<div class="faction-overview"><article class="faction-brief"><img src="./assets/backgrounds/${faction.background}.webp" alt="" width="1024" height="1024"><span class="faction-index" aria-hidden="true">${String(factions.indexOf(faction) + 1).padStart(2, '0')}</span><div class="eyebrow">${escape(faction.english)}</div><h3>${escape(faction.description)}</h3><p>${escape(faction.body)}</p><div class="faction-meta"><span>${escape(faction.tag)}</span><span>${escape(faction.business)}</span></div><small>${escape(faction.note)}</small></article><div class="person-grid">${members.map(person => `<button class="person-card" data-person="${person.id}" aria-label="${escape(person.name)} 상세 기록 보기"><div class="person-picture"><img src="./assets/thumbs/${person.id}.webp" alt="${escape(person.name)}" width="480" height="480" loading="eager"><span class="person-kind">${person.npc ? 'CITIZEN FILE' : 'PERSONNEL FILE'}</span></div><h4>${escape(person.name)}</h4><p class="person-role">${escape(person.role)}</p><p class="person-traits">${escape(person.npc ? '도시의 주민과 조직원' : person.bio)}</p></button>`).join('')}</div></div>`;
   }
   factionTabs.addEventListener('click', event => {
     const tab = event.target.closest('[data-faction]');
@@ -53,12 +123,39 @@
   const expressionTabs = $('#expression-tabs');
   let currentPerson = null;
   let returnFocus = null;
-  function setExpression(key) {
+  let expressionRequest = 0;
+  let requestedExpression = 'default';
+  async function setExpression(key) {
     if (!currentPerson) return;
+    const request = ++expressionRequest;
+    requestedExpression = key;
+    const person = currentPerson;
     const expression = expressions.find(item => item[0] === key);
     const characterImage = $('#character-image');
-    characterImage.src = image(currentPerson, key);
-    characterImage.alt = `${currentPerson.name} · ${expression[1]}`;
+    const panel = $('#expression-panel');
+    const status = $('#image-status');
+    panel.setAttribute('aria-busy', 'true');
+    status.textContent = '이미지를 준비하고 있습니다.';
+    status.hidden = false;
+    $('#image-retry').hidden = true;
+    const src = image(person, key);
+    let ok = await preloadImage(src);
+    if (ok) {
+      const ready = new Image();
+      ready.src = src;
+      try { await ready.decode(); } catch { ok = false; imageRequests.delete(src); }
+    }
+    if (request !== expressionRequest) return;
+    panel.setAttribute('aria-busy', 'false');
+    if (!ok) {
+      status.textContent = '이미지를 불러오지 못했습니다. 다시 시도해 주세요.';
+      $('#image-retry').hidden = false;
+      return;
+    }
+    characterImage.src = src;
+    characterImage.alt = `${person.name} · ${expression[1]}`;
+    characterImage.style.visibility = '';
+    status.hidden = true;
     const tab = $(`[data-expression="${key}"]`, expressionTabs);
     if (tab) {
       selectTab(expressionTabs, tab);
@@ -68,6 +165,7 @@
   function openPerson(id, trigger) {
     const person = people.find(item => item.id === id);
     if (!person) return;
+    $('#character-image').style.visibility = 'hidden';
     currentPerson = person;
     returnFocus = trigger;
     const faction = factions.find(item => item.id === person.group);
@@ -102,6 +200,7 @@
     if (tab) setExpression(tab.dataset.expression);
   });
   keyboardTabs(expressionTabs);
+  $('#image-retry').addEventListener('click', () => setExpression(requestedExpression));
   $('.dialog-close').addEventListener('click', () => dialog.close());
   dialog.addEventListener('click', event => {
     if (event.target !== dialog) return;
@@ -122,7 +221,7 @@
     const panel = $('#district-detail');
     selectTab($('.district-selector'), $(`[data-district="${id}"]`));
     panel.setAttribute('aria-labelledby', `district-${id}`);
-    panel.innerHTML = `${district.background ? `<img src="./assets/backgrounds/${district.background}.webp" alt="${escape(district.name)}의 분위기를 보여주는 배경" width="1024" height="1024" loading="lazy">` : '<div class="park-graphic" aria-hidden="true"><span>♧</span></div>'}<div class="district-content"><span class="eyebrow">${district.english}</span><h3>${district.name}</h3><p>${district.text}</p><span class="district-business">${district.business}</span></div>`;
+    panel.innerHTML = `${district.background ? `<img src="./assets/backgrounds/${district.background}.webp" alt="${escape(district.name)}의 분위기를 보여주는 배경" width="1024" height="1024" loading="eager">` : '<div class="park-graphic" aria-hidden="true"><span>♧</span></div>'}<div class="district-content"><span class="eyebrow">${district.english}</span><h3>${district.name}</h3><p>${district.text}</p><span class="district-business">${district.business}</span></div>`;
   }
   $('.district-selector').addEventListener('click', event => {
     const tab = event.target.closest('[data-district]');
@@ -174,4 +273,5 @@
   window.addEventListener('popstate', () => openSection(location.hash.slice(1), true));
   window.addEventListener('hashchange', () => openSection(location.hash.slice(1)));
   openSection(location.hash.slice(1));
+  preloadSite().catch(dismissLoader);
 })();

@@ -16,6 +16,9 @@
   <script defer src="./app.js"></script>
 </head>
 <body class="tabbed-site">
+  <div id="site-loader" class="site-loader" hidden role="dialog" aria-modal="true" aria-labelledby="loader-title">
+    <div class="loader-card"><p class="eyebrow">WELCOME TO BASTON</p><h2 id="loader-title">도시의 불을 켜는 중</h2><p id="loader-message">바스턴의 풍경과 인물을 준비하고 있습니다.</p><progress id="loader-progress" max="100" value="0" aria-label="이미지 준비 진행률"></progress><p id="loader-count" aria-live="polite">0%</p><button id="loader-skip" type="button">먼저 들어가기 <span aria-hidden="true">↗</span></button></div>
+  </div>
   <a class="skip-link" href="#main">본문으로 바로가기</a>
   <header class="site-header">
     <a class="brand" href="#home" aria-label="캣피아 처음으로"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M7 22 8 6l10 8h4L32 6l1 16c0 9-6 14-13 14S7 31 7 22Z"/><path d="m11 23 5 2m13-2-5 2M18 29h4"/></svg><span>CATFIA<small>바스턴 기록보관소</small></span></a>
@@ -79,5 +82,5 @@
 
   </main>
 
-  <dialog id="character-dialog" aria-labelledby="character-title"><button class="dialog-close" aria-label="인물 상세 닫기">×</button><div class="character-modal"><div class="modal-visual"><div id="expression-panel" role="tabpanel" tabindex="0"><img id="character-image" src="./assets/characters/calogero-default.webp" alt="" width="960" height="960"></div><div id="expression-tabs" role="tablist" aria-label="표정 선택"></div></div><div class="modal-copy"><p class="eyebrow" id="character-group"></p><h2 id="character-title"></h2><p id="character-role"></p><dl id="character-facts"></dl></div></div></dialog>
+  <dialog id="character-dialog" aria-labelledby="character-title"><button class="dialog-close" aria-label="인물 상세 닫기">×</button><div class="character-modal"><div class="modal-visual"><div id="expression-panel" role="tabpanel" tabindex="0"><img id="character-image" src="./assets/characters/calogero-default.webp" alt="" width="960" height="960"><p id="image-status" class="image-status" role="status" hidden></p><button id="image-retry" class="image-retry" type="button" hidden>다시 불러오기</button></div><div id="expression-tabs" role="tablist" aria-label="표정 선택"></div></div><div class="modal-copy"><p class="eyebrow" id="character-group"></p><h2 id="character-title"></h2><p id="character-role"></p><dl id="character-facts"></dl></div></div></dialog>
 </body></html>
