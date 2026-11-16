@@ -6,7 +6,7 @@
   const escape = value => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
   const image = (person, expression = 'default') => `./assets/characters/${person.id}-${expression}.webp`;
 
-  // Preload only assets referenced by the current public roster.
+  // Load visible content first; warm only a small, context-specific queue.
   const imageRequests = new Map();
   function preloadImage(src) {
     if (imageRequests.has(src)) return imageRequests.get(src);
@@ -46,13 +46,7 @@
     siteRegions.forEach(region => region.inert = true);
     $('#loader-skip').focus({ preventScroll: true });
     $('#loader-skip').addEventListener('click', dismissLoader);
-    const backgrounds = new Set([...factions.map(f => f.background), ...Object.values(districts).map(d => d.background), 'harbor', 'fblock']);
-    const urls = [...new Set([
-      './assets/portraits/calogero.webp', './assets/portraits/alfio.webp',
-      ...[...backgrounds].filter(Boolean).map(name => `./assets/backgrounds/${name}.webp`),
-      ...people.map(person => `./assets/thumbs/${person.id}.webp`),
-      ...people.flatMap(person => (person.npc ? ['default'] : expressions.map(e => e[0])).map(key => image(person, key)))
-    ])];
+    const urls = ['./assets/portraits/calogero.webp', './assets/portraits/alfio.webp', './assets/backgrounds/fblock.webp'];
     let next = 0, completed = 0, failed = 0;
     const progress = $('#loader-progress');
     progress.max = urls.length;
@@ -74,6 +68,39 @@
     document.body.dataset.imageFailures = failed;
     document.body.dataset.preloadComplete = 'true';
     dismissLoader();
+    if (activeSection === 'home') warmImages(factionAssets('family'));
+  }
+
+  let activeSection = 'home';
+  let warmGeneration = 0;
+  function cancelWarmup() { warmGeneration++; }
+  async function warmImages(urls) {
+    const generation = ++warmGeneration;
+    // Do not compete with navigation, or spend metered data speculatively.
+    if (navigator.connection?.saveData || /(^|-)2g$/.test(navigator.connection?.effectiveType || '')) return;
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    for (const src of [...new Set(urls)]) {
+      if (generation !== warmGeneration || document.hidden) return;
+      await preloadImage(src);
+    }
+  }
+  function factionAssets(id) {
+    const faction = factions.find(f => f.id === id);
+    return [`./assets/backgrounds/${faction.background}.webp`, ...people.filter(p => p.group === id).map(p => `./assets/thumbs/${p.id}.webp`)];
+  }
+  async function prepareImages(scope) {
+    await Promise.all($$('img', scope).map(async img => {
+      const src = img.dataset.src || img.getAttribute('src');
+      if (!src) return;
+      const frame = img.closest('.person-picture, .faction-brief, .district-detail, .world-image');
+      frame?.classList.add('image-pending');
+      img.classList.add('pending-image');
+      img.loading = 'eager';
+      if (img.dataset.src) { img.src = src; delete img.dataset.src; }
+      try { await img.decode(); } catch { /* Keep useful alt text on failure. */ }
+      img.classList.remove('pending-image');
+      frame?.classList.remove('image-pending');
+    }));
   }
 
   function keyboardTabs(container) {
@@ -102,7 +129,10 @@
 
   const factionTabs = $('#faction-tabs');
   factionTabs.innerHTML = factions.map((faction, index) => `<button role="tab" id="faction-${faction.id}" aria-controls="faction-panel" aria-selected="${index === 0}" tabindex="${index === 0 ? 0 : -1}" data-faction="${faction.id}">${escape(faction.name)}</button>`).join('');
+  let selectedFaction = null;
   function showFaction(id) {
+    cancelWarmup();
+    selectedFaction = id;
     const faction = factions.find(item => item.id === id);
     if (!faction) return;
     const panel = $('#faction-panel');
@@ -111,13 +141,16 @@
     panel.setAttribute('aria-labelledby', `faction-${id}`);
     panel.style.setProperty('--accent', faction.color);
     panel.innerHTML = `<div class="faction-overview"><article class="faction-brief"><img src="./assets/backgrounds/${faction.background}.webp" alt="" width="1024" height="1024"><span class="faction-index" aria-hidden="true">${String(factions.indexOf(faction) + 1).padStart(2, '0')}</span><div class="eyebrow">${escape(faction.english)}</div><h3>${escape(faction.description)}</h3><p>${escape(faction.body)}</p><div class="faction-meta"><span>${escape(faction.tag)}</span><span>${escape(faction.business)}</span></div><small>${escape(faction.note)}</small></article><div class="person-grid">${members.map(person => `<button class="person-card" data-person="${person.id}" aria-label="${escape(person.name)} 상세 기록 보기"><div class="person-picture"><img src="./assets/thumbs/${person.id}.webp" alt="${escape(person.name)}" width="480" height="480" loading="eager"><span class="person-kind">${person.npc ? 'CITIZEN FILE' : 'PERSONNEL FILE'}</span></div><h4>${escape(person.name)}</h4><p class="person-role">${escape(person.role)}</p><p class="person-traits">${escape(person.npc ? '도시의 주민과 조직원' : person.bio)}</p></button>`).join('')}</div></div>`;
+    prepareImages(panel).then(() => {
+      if (selectedFaction === id && activeSection === 'factions' && !dialog.open) warmImages(members.map(p => image(p)));
+    });
   }
   factionTabs.addEventListener('click', event => {
     const tab = event.target.closest('[data-faction]');
     if (tab) showFaction(tab.dataset.faction);
   });
   keyboardTabs(factionTabs);
-  showFaction('family');
+
 
   const dialog = $('#character-dialog');
   const expressionTabs = $('#expression-tabs');
@@ -135,6 +168,7 @@
     const panel = $('#expression-panel');
     const status = $('#image-status');
     panel.setAttribute('aria-busy', 'true');
+    panel.classList.toggle('image-pending', characterImage.style.visibility === 'hidden');
     status.hidden = true;
     $('#image-retry').hidden = true;
     const src = image(person, key);
@@ -146,6 +180,7 @@
     }
     if (request !== expressionRequest) return;
     panel.setAttribute('aria-busy', 'false');
+    panel.classList.remove('image-pending');
     if (!ok) {
       status.textContent = '이미지를 불러오지 못했습니다. 다시 시도해 주세요.';
       status.hidden = false;
@@ -163,6 +198,7 @@
     }
   }
   function openPerson(id, trigger) {
+    cancelWarmup();
     const person = people.find(item => item.id === id);
     if (!person) return;
     $('#character-image').style.visibility = 'hidden';
@@ -186,7 +222,9 @@
       $('#expression-panel').setAttribute('role', 'tabpanel');
       expressionTabs.innerHTML = expressions.map(([key, label]) => `<button id="expression-${key}" role="tab" aria-controls="expression-panel" aria-selected="${key === 'default'}" tabindex="${key === 'default' ? 0 : -1}" data-expression="${key}">${label}</button>`).join('');
     }
-    setExpression('default');
+    setExpression('default').then(() => {
+      if (currentPerson === person && dialog.open && !person.npc) warmImages(expressions.filter(e => e[0] !== 'default').map(e => image(person, e[0])));
+    });
     dialog.showModal();
     dialog.scrollTop = 0;
     $('.dialog-close').focus({ preventScroll: true });
@@ -207,7 +245,7 @@
     const box = dialog.getBoundingClientRect();
     if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) dialog.close();
   });
-  dialog.addEventListener('close', () => { if (returnFocus?.isConnected) returnFocus.focus({ preventScroll: true }); });
+  dialog.addEventListener('close', () => { cancelWarmup(); expressionRequest++; if (returnFocus?.isConnected) returnFocus.focus({ preventScroll: true }); });
 
   const districts = {
     residential: { name: '주택가', english: 'RESIDENTIAL BLOCK', background: 'house', text: '거주 인구가 많아 귀여움 팔기에 좋은 구역. 인간의 식탁과 급식은 고양이 사회의 경제에도 영향을 미친다. 집 안의 풍요와 집 밖의 생존은 서로 다르다.', business: '주요 기회 / 귀여움 팔기' },
@@ -216,19 +254,28 @@
     park: { background: 'park', name: '공원', english: 'THE HUNTING GROUNDS', text: '쥐와 새 같은 사냥감이 많아 착실하게 사냥하기 좋은 곳. 그러나 사냥감의 수는 계절을 따른다. 겨울이 오면 한 끼를 구하는 일부터 어려워진다.', business: '주요 기회 / 사냥 · 계절에 따른 식량 확보' },
     police: { name: '경찰서', english: 'POLICE HEADQUARTERS', background: 'police', text: '경찰견들의 본진. 체포된 범죄자 고양이는 우리에 갇힌다. 원칙을 지키는 경관, 증거를 좇는 형사, 거래를 택하는 서장의 이해관계가 이곳에서 교차한다.', business: '핵심 기능 / 법 집행 · 수사 · 구금' }
   };
+  let selectedDistrict = null;
   function showDistrict(id) {
+    cancelWarmup();
+    selectedDistrict = id;
     const district = districts[id];
     const panel = $('#district-detail');
     selectTab($('.district-selector'), $(`[data-district="${id}"]`));
     panel.setAttribute('aria-labelledby', `district-${id}`);
     panel.innerHTML = `${district.background ? `<img src="./assets/backgrounds/${district.background}.webp" alt="${escape(district.name)}의 분위기를 보여주는 배경" width="1024" height="1024" loading="eager">` : '<div class="park-graphic" aria-hidden="true"><span>♧</span></div>'}<div class="district-content"><span class="eyebrow">${district.english}</span><h3>${district.name}</h3><p>${district.text}</p><span class="district-business">${district.business}</span></div>`;
+    prepareImages(panel).then(() => {
+      if (activeSection !== 'districts' || selectedDistrict !== id) return;
+      const ids = Object.keys(districts);
+      const next = districts[ids[(ids.indexOf(id) + 1) % ids.length]];
+      warmImages([`./assets/backgrounds/${next.background}.webp`]);
+    });
   }
   $('.district-selector').addEventListener('click', event => {
     const tab = event.target.closest('[data-district]');
     if (tab) showDistrict(tab.dataset.district);
   });
   keyboardTabs($('.district-selector'));
-  showDistrict('residential');
+
 
   const menuButton = $('.menu-toggle');
   const mobileNav = $('#mobile-nav');
@@ -245,6 +292,8 @@
   const sectionIds = ['home', 'world', 'factions', 'districts', 'business'];
   function openSection(id, focus = false) {
     if (!sectionIds.includes(id)) id = 'home';
+    cancelWarmup();
+    activeSection = id;
     sectionIds.forEach(sectionId => {
       const section = document.getElementById(sectionId);
       section.hidden = sectionId !== id;
@@ -254,6 +303,9 @@
         if (focus) section.focus({ preventScroll: true });
       }
     });
+    if (id === 'factions' && !selectedFaction) showFaction('family');
+    if (id === 'districts' && !selectedDistrict) showDistrict('residential');
+    prepareImages(document.getElementById(id));
     $$('.site-header nav a, #mobile-nav a').forEach(link => {
       const active = link.hash === `#${id}`;
       link.classList.toggle('active', active);
@@ -273,5 +325,6 @@
   window.addEventListener('popstate', () => openSection(location.hash.slice(1), true));
   window.addEventListener('hashchange', () => openSection(location.hash.slice(1)));
   openSection(location.hash.slice(1));
-  preloadSite().catch(dismissLoader);
+  if (activeSection === 'home') preloadSite().catch(dismissLoader);
+  else dismissLoader();
 })();
